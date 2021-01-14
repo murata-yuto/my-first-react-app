@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Table } from "./components/Table";
 import { Button } from "./components/Button";
+import { studentsCollection, updateStudentFirestore } from "./firebasefunction";
 import { firebaseApp } from "./firebase";
 const INITIAL_STUDENTS = [
   { id: 1, name: "Bob" },
@@ -42,8 +43,7 @@ function App() {
 
     if (studentName === "" || studentAge === "")
       return alert("Please input name, input age");
-    const db = firebaseApp.firestore();
-    const studentCollection = db.collection("students");
+    const studentCollection = studentsCollection();
     const newStudentDocRef = studentCollection.doc();
     await newStudentDocRef.set({
       name: studentName,
@@ -63,44 +63,28 @@ function App() {
         return student.id !== studentId;
       })
     );
-    const studentDoc = await firebaseApp
-      .firestore()
-      .collection("students")
-      .doc(studentId)
-      .delete();
+    const studentDoc = await studentsCollection.doc(studentId).delete();
     console.log(studentDoc);
   };
   /** 生徒のアップデートを行う処理 */
   const updateStudent = (studentId) => {
-    const inputVal = prompt("name please: ");
+    const inputName = prompt("name please: ");
     const inputAge = prompt("age please: ");
-    if (inputVal === "" || inputAge === "") {
+    if (inputName === "" || inputAge === "") {
       alert("アラートの表示");
       return;
     }
     setStudents(
       students.map((student) => {
         if (student.id === studentId) {
-          student.name = inputVal;
+          student.name = inputName;
           student.age = inputAge;
         }
         return student;
       })
     );
     // Add a new document in collection "cities"
-    const db = firebaseApp.firestore();
-    db.collection("students")
-      .doc(studentId)
-      .update({
-        name: inputVal,
-        age: inputAge,
-      })
-      .then(function () {
-        console.log("Document successfully written!");
-      })
-      .catch(function (error) {
-        console.error("Error writing document: ", error);
-      });
+    updateStudentFirestore(studentId, inputName, inputAge);
   };
   /** ページネーションの設定を行う処理 */
   const pageNationStudent = () => {
