@@ -22,6 +22,7 @@ export const Table = ({
   deleteStudent,
   updateStudent,
   pageNationStudent,
+  updatestudentAge,
 }) => {
   let chankArray = pageNationStudent();
   return (
@@ -67,6 +68,15 @@ export const Table = ({
                       console.log("CLICKED");
                     }}
                     title="update"
+                  />
+                  <Button
+                    style={{ marginRight: 10 }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      updatestudentAge(s.id, 1);
+                      console.log("CLICKED");
+                    }}
+                    title="plus[+]"
                   />
                 </TableBodyCell>
               </tr>

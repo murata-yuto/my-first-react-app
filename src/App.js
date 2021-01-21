@@ -47,7 +47,7 @@ function App() {
     const newStudentDocRef = studentCollection.doc();
     await newStudentDocRef.set({
       name: studentName,
-      age: studentAge,
+      age: +studentAge,
     });
     setStudents([
       ...students,
@@ -77,14 +77,17 @@ function App() {
     setStudents(
       students.map((student) => {
         if (student.id === studentId) {
-          student.name = inputName;
-          student.age = inputAge;
+          return {
+            id: student.id,
+            name: inputName,
+            age: +inputAge,
+          };
         }
         return student;
       })
     );
     // Add a new document in collection "cities"
-    updateStudentFirestore(studentId, inputName, inputAge);
+    updateStudentFirestore(studentId, inputName, +inputAge);
   };
   /** ページネーションの設定を行う処理 */
   const pageNationStudent = () => {
